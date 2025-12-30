@@ -1,8 +1,16 @@
+with orders as  (
+    select * from {{ ref ('stg_jaffle_shop__orders' )}}
+),
+
+payments as (
+    select * from {{ ref ('stg_stripe__payments') }}
+),
+
+
 select
     o.order_id,
-    c.customer_id,
+    o.customer_id,
     p.amount,
     p.status
-from {{ ref('stg_jaffle_shop__orders') }} as o
-join {{ ref('stg_jaffle_shop__customers') }} as c on c.customer_id = o.customer_id
-join {{ ref('stg_stripe__payments') }} as p on o.order_id = p.order_id
+from orders as o 
+left join payments as p using (order_id)
