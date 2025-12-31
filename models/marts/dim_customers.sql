@@ -30,7 +30,7 @@ customer_payments as (
         customer_id,
         sum(amount) as sum_amount
     from fact_orders
-    where status = 'success'
+    where payment_status = 'success'
     group by customer_id
     
 
