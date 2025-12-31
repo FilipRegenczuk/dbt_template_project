@@ -3,6 +3,6 @@ select
     orderid as order_id,
     paymentmethod as payment_method,
     status,
-    amount / 100, -- conversion from cents to dollars
+    amount / 100 as amount, -- conversion from cents to dollars
     created as created_at
 from raw.stripe.payment

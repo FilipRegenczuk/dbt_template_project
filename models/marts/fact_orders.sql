@@ -7,10 +7,14 @@ payments as (
 ),
 
 
-select
-    o.order_id,
-    o.customer_id,
-    p.amount,
-    p.status
-from orders as o 
-left join payments as p using (order_id)
+final as (
+    select
+        o.order_id,
+        o.customer_id,
+        p.amount,
+        p.status
+    from orders as o 
+    left join payments as p using (order_id)
+)
+
+select * from final
