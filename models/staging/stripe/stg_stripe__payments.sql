@@ -1,8 +1,23 @@
-select
-    id as payment_id,
-    orderid as order_id,
-    paymentmethod as payment_method,
-    status,
-    amount / 100, -- conversion from cents to dollars
-    created as created_at
-from raw.stripe.payment
+with 
+
+source as (
+
+    select * from {{ source('stripe', 'payment') }}
+
+),
+
+renamed as (
+
+    select
+        id as payment_id,
+        orderid as order_id,
+        paymentmethod as payment_method,
+        status as payment_status,
+        amount/100 as amount,   -- conversion from cents to dollars
+        created as created_at
+
+    from source
+
+)
+
+select * from renamed
