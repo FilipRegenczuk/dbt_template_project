@@ -41,17 +41,9 @@ Run the setup script to install the uv environment and dbt-fusion:
 
 This script will:
 1. Set up the uv Python environment (`uv sync`)
-2. Install dbt-fusion via the official installer
+2. Install dbt-fusion into the uv virtual environment (not globally)
 
-Alternatively, you can run the steps manually:
 
-```bash
-# Set up the uv environment
-uv sync
-
-# Install dbt-fusion
-curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh | sh -s -- --update
-```
 
 ## Usage
 
@@ -64,10 +56,13 @@ After installation, you can use:
   uv run dbt test
   ```
 
-- **dbt-fusion commands**: Use `dbtf` directly (installed globally):
+- **dbt-fusion commands**: Use `dbt` through uv (dbt-fusion is installed as `dbt` in the uv environment):
   ```bash
-  dbtf --version
+  uv run dbt --version
+  uv run dbt run
   ```
+  
+  Note: The dbt-fusion installer installs a binary named `dbt` (which is dbt-fusion, not dbt-core).
 
 ## Project Structure
 
