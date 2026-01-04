@@ -5,8 +5,41 @@ For playing around with DBT models, tests, macros etc.
 ## Prerequisites
 
 - [uv](https://github.com/astral-sh/uv) - Fast Python package installer and resolver
+- [direnv](https://direnv.net/) - Automatically loads environment variables from `.env` file
 - `curl` - Usually pre-installed on macOS/Linux
 - `bash` - Usually pre-installed on macOS/Linux
+
+### Installing direnv
+
+**macOS:**
+```bash
+brew install direnv
+```
+
+**Linux:**
+```bash
+# Ubuntu/Debian
+sudo apt-get install direnv
+
+# Or via other package managers
+```
+
+**After installation**, add to your shell configuration:
+
+For **zsh** (add to `~/.zshrc`):
+```bash
+eval "$(direnv hook zsh)"
+```
+
+For **bash** (add to `~/.bashrc` or `~/.bash_profile`):
+```bash
+eval "$(direnv hook bash)"
+```
+
+Then restart your terminal or run:
+```bash
+source ~/.zshrc  # or source ~/.bashrc
+```
 
 ## Local Installation
 
@@ -45,24 +78,67 @@ This script will:
 
 
 
+## Configuration
+
+### Environment Variables
+
+This project uses environment variables for sensitive credentials (stored in `.env` file). The project uses **direnv** to automatically load these variables when you enter the project directory.
+
+1. **Create your `.env` file**:
+   ```bash
+   cp .env.example .env
+   ```
+
+   Or manualy copy `.env.example` file and rename it to `.env`.
+
+2. **Edit `.env`** and fill in your Snowflake credentials:
+   ```bash
+   SNOWFLAKE_ACCOUNT=your_account
+   SNOWFLAKE_USER=your_user
+   SNOWFLAKE_PASSWORD=your_password
+   SNOWFLAKE_WAREHOUSE=your_warehouse
+   SNOWFLAKE_DATABASE=your_database
+   SNOWFLAKE_SCHEMA=your_schema
+   ```
+
+3. **Allow direnv to load the `.envrc` file** (first time only):
+   ```bash
+   direnv allow
+   ```
+
+The `.env` file is gitignored and will not be committed to version control. The `.envrc` file is committed to version control and tells direnv to load the `.env` file.
+
 ## Usage
 
-After installation, you can use:
+After installation and configuration, you can use dbt commands directly. **direnv automatically loads your `.env` file** when you enter the project directory, so all environment variables are available.
 
-- **dbt commands**: Run dbt commands through uv:
-  ```bash
-  uv run dbt --version
-  uv run dbt run
-  uv run dbt test
-  ```
+### Running dbt commands
 
-- **dbt-fusion commands**: Use `dbt` through uv (dbt-fusion is installed as `dbt` in the uv environment):
-  ```bash
-  uv run dbt --version
-  uv run dbt run
-  ```
-  
-  Note: The dbt-fusion installer installs a binary named `dbt` (which is dbt-fusion, not dbt-core).
+Simply run dbt commands through uv:
+
+```bash
+uv run dbt --version
+uv run dbt run
+uv run dbt test
+uv run dbt compile
+uv run dbt docs generate
+```
+
+The environment variables from your `.env` file are automatically loaded by direnv, so `profiles.yml` will have access to all the `env_var()` references.
+
+### Verifying direnv is working
+
+When you `cd` into the project directory, you should see a message like:
+```
+direnv: loading .envrc
+direnv: export +SNOWFLAKE_ACCOUNT +SNOWFLAKE_USER ...
+```
+
+If you don't see this, make sure:
+1. direnv is installed and hooked into your shell
+2. You've run `direnv allow` in the project directory
+
+**Note:** The dbt-fusion installer installs a binary named `dbt` (which is dbt-fusion, not dbt-core).
 
 ## Project Structure
 
@@ -77,6 +153,10 @@ dbt_playground/
 ├── snapshots/       # Snapshot definitions
 ├── analyses/        # Analysis queries
 ├── dbt_project.yml  # dbt project configuration
+├── profiles.yml     # dbt profiles (uses env vars from .env)
 ├── pyproject.toml   # Python project configuration
-└── setup.sh         # Setup script
+├── setup.sh         # Setup script
+├── .envrc           # direnv configuration (loads .env)
+├── .env.example     # Example environment variables template
+└── .env             # Your actual credentials (gitignored)
 ```
