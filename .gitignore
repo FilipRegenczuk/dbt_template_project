@@ -3,3 +3,11 @@ target/
 dbt_packages/
 logs/
 **/package-lock.yml
+
+# uv related
+uv.lock
+.python-version
+.venv/
+
+# IDE related
+.vscode/
