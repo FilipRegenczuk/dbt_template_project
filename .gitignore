@@ -16,3 +16,4 @@ dbt_internal_packages/
 
 # Environment variables
 .env
+.priv
